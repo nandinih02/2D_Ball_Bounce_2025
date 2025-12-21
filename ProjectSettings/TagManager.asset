@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ball
   - Paddle
+  - FallCheck
   layers:
   - Default
   - TransparentFX
