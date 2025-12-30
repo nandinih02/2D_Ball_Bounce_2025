@@ -7,7 +7,7 @@ public class Ball : MonoBehaviour
     bool gameStarted;
     Rigidbody2D rb;
    // PlayerInput playerInput;
-    public PlayerInput playerInput;
+    PlayerInput playerInput;
     private InputAction touchPress;
 
     void Awake()
@@ -42,13 +42,34 @@ public class Ball : MonoBehaviour
                 StartBounce();
                 gameStarted = true;
                 
-            }    
+            }  
         }
+        else
+        {
+            if (Mathf.Abs(rb.linearVelocity.x) < 0.2f)
+            {
+                rb.linearVelocity = new Vector2(0.2f * Mathf.Sign(rb.linearVelocity.x), rb.linearVelocity.y); 
+            } 
+            if (Mathf.Abs(rb.linearVelocity.y) < 0.2f)
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0.2f * Mathf.Sign(rb.linearVelocity.y));  
+            } 
+        }
+        
 
+    }
+    void FixedUpdate()
+    {
+        if(gameStarted)
+        {
+            rb.linearVelocity = rb.linearVelocity.normalized * bounceForce;
+        }
     }
     public void StartBounce()
     {
         Vector2 randomPos = new Vector2(Random.Range(-1,1),1);
+
+        //rb.linearVelocity = randomPos.normalized * bounceForce;
 
         rb.AddForce(randomPos * bounceForce, ForceMode2D.Impulse);
     }
@@ -62,6 +83,11 @@ public class Ball : MonoBehaviour
         else if(collision.gameObject.tag == "Paddle")
         {
             GameManager.instance.Score();
+            StartBounce();
+        }
+        else if(collision.gameObject.tag == "Wall")
+        {
+            StartBounce();
         }
     }
 }
